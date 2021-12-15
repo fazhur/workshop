@@ -1,4 +1,26 @@
 from datetime import date
+import csv
+
+
+def read_csv(path):
+    dct = {}
+
+    with open(path) as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader)
+        for i in csvreader:
+            dct.update({i[0]: i[1]})
+
+        return dct
+
+
+def write_csv(path, dct):
+    with open(path, "w") as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(["Task", "Deadline"])
+        for task in dct:
+            row = [task, dct[task]]
+            csvwriter.writerow(row)
 
 
 def sort_by_deadline(tasks: dict):
@@ -37,17 +59,15 @@ def main():
     print("Welcome to TODO list app!")
     show_help()
 
-    tasks = {
-        "OP Mini-project 3": "21.12.2021",
-        "History test": "15.12.2021",
-        "OP Lab12": "15.12.2021"
-    }
-    # TODO: USE READ_CSV METHOD
+    tasks = read_csv('123.csv')
+
     input_str = input()
     while input_str != "exit":
-        if input_str == "show":
+        if input_str == "help":
+            show_help()
+        elif input_str == "show":
             show_tasks(tasks)
-        if input_str == "now":
+        elif input_str == "now":
             today = date.today().strftime("%d.%m.%Y")
             print("Today's date:", today)
             dct = {}
@@ -63,8 +83,11 @@ def main():
                 print(f"Task {task} successfully added!")
             else:
                 print("Failed to add task!")
+        else:
+            print("Unknown command! Type \"help\" for help")
         input_str = input()
-    # TODO: WRITE TO CSV FILE
+
+    write_csv("123.csv", tasks)
 
 
 def show_help():
